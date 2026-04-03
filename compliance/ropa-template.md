@@ -19,11 +19,11 @@
 |-------|---------|
 | **Processing activity** | Provision of IT security architecture, GDPR compliance, and AI security consulting services |
 | **Purpose** | Fulfillment of consulting contracts: security audits, GDPR gap analyses, AI compliance assessments, DPIA creation, TOM documentation |
-| **Legal basis** | Art. 6(1)(b) — contract performance; Art. 6(1)(f) — legitimate interest (security improvement) |
+| **Legal basis** | Art. 6(1)(b), contract performance; Art. 6(1)(f), legitimate interest (security improvement) |
 | **Categories of data subjects** | Client employees, client customers (indirectly, via document review) |
 | **Categories of personal data** | Names, job titles, email addresses, organizational structure; client documents may contain customer PII (names, addresses, financial data, contract details) |
-| **Recipients / Processors** | Anthropic (Claude API, US — SCCs) [VERIFY_CURRENT], Microsoft Azure (EU West Europe — DPA) [VERIFY_CURRENT], Microsoft OneDrive M365 (EU — DPA) [VERIFY_CURRENT] |
-| **Third country transfers** | Anthropic Inc. (US) — Standard Contractual Clauses; all client PII redacted before AI transmission via automated PII redaction pipeline |
+| **Recipients / Processors** | Anthropic (Claude API, US, SCCs) [VERIFY_CURRENT], Microsoft Azure (EU West Europe, DPA) [VERIFY_CURRENT], Microsoft OneDrive M365 (EU, DPA) [VERIFY_CURRENT] |
+| **Third country transfers** | Anthropic Inc. (US), Standard Contractual Clauses; all client PII redacted before AI transmission via automated PII redaction pipeline |
 | **Retention period** | Active engagement + 6 months post-completion; tax-relevant documents 10 years (AO SS147); deletion upon client request per DPA |
 | **Technical & organizational measures** | BitLocker encryption, dedicated `Work` directory with file audit logging, PII redaction pipeline, token-based access control, Sysmon + Sentinel monitoring, OneDrive backup with 30-day versioning |
 
@@ -35,7 +35,7 @@
 |-------|---------|
 | **Processing activity** | Identification and research of potential clients for consulting services |
 | **Purpose** | Legitimate business development via inbound marketing, events, referrals, and cold calling |
-| **Legal basis** | Art. 6(1)(f) — legitimate interest (business development with documented reason per prospect) |
+| **Legal basis** | Art. 6(1)(f), legitimate interest (business development with documented reason per prospect) |
 | **Categories of data subjects** | Business contacts at prospective client organizations |
 | **Categories of personal data** | Names, job titles, business email, business phone, company name, company size, industry |
 | **Recipients / Processors** | None (processed locally) |
@@ -51,11 +51,11 @@
 |-------|---------|
 | **Processing activity** | Hosting and operation of [YOUR_WEBSITE], including privacy-preserving analytics |
 | **Purpose** | Online presence, service information, contact facilitation |
-| **Legal basis** | Art. 6(1)(f) — legitimate interest (business presence); Art. 6(1)(b) — pre-contractual measures (contact form) |
+| **Legal basis** | Art. 6(1)(f), legitimate interest (business presence); Art. 6(1)(b), pre-contractual measures (contact form) |
 | **Categories of data subjects** | Website visitors, contact form users |
 | **Categories of personal data** | Anonymized IP addresses (server logs), browser type, OS, referrer; contact form: name, email, message content |
-| **Recipients / Processors** | Cloudflare Inc. (Pages hosting, CDN, Web Analytics — EU-US Data Privacy Framework certified) [VERIFY_CURRENT]; Cal.com (EU instance — appointment booking) [VERIFY_CURRENT] |
-| **Third country transfers** | Cloudflare (US) — EU-US DPF; Google Fonts loaded from Google servers (EU-US DPF) |
+| **Recipients / Processors** | Cloudflare Inc. (Pages hosting, CDN, Web Analytics, EU-US Data Privacy Framework certified) [VERIFY_CURRENT]; Cal.com (EU instance, appointment booking) [VERIFY_CURRENT] |
+| **Third country transfers** | Cloudflare (US), EU-US DPF; Google Fonts loaded from Google servers (EU-US DPF) |
 | **Retention period** | Server logs: 30 days; contact form data: duration of correspondence + 6 months; analytics: aggregated, no personal data stored |
 | **Technical & organizational measures** | Cloudflare Web Analytics (no cookies, no IP storage, no tracking); HTTPS enforced; no Google Analytics; no marketing pixels |
 
@@ -67,11 +67,11 @@
 |-------|---------|
 | **Processing activity** | Use of AI systems to analyze client documents for GDPR compliance, security gaps, and AI risk assessment |
 | **Purpose** | Efficient and thorough analysis of client documentation as part of consulting engagements |
-| **Legal basis** | Art. 6(1)(b) — contract performance |
+| **Legal basis** | Art. 6(1)(b), contract performance |
 | **Categories of data subjects** | Individuals referenced in client documents (employees, customers, partners) |
-| **Categories of personal data** | Potentially: names, addresses, financial data, contract terms, employment details — ALL redacted before AI processing |
-| **Recipients / Processors** | Anthropic (Claude API, US — SCCs) [VERIFY_CURRENT]; Microsoft Azure OpenAI + Document Intelligence (EU West Europe — DPA) [VERIFY_CURRENT] |
-| **Third country transfers** | Anthropic (US) — SCCs; PII redacted before transmission; Azure processing stays in EU |
+| **Categories of personal data** | Potentially: names, addresses, financial data, contract terms, employment details. ALL redacted before AI processing |
+| **Recipients / Processors** | Anthropic (Claude API, US, SCCs) [VERIFY_CURRENT]; Microsoft Azure OpenAI + Document Intelligence (EU West Europe, DPA) [VERIFY_CURRENT] |
+| **Third country transfers** | Anthropic (US), SCCs; PII redacted before transmission; Azure processing stays in EU |
 | **Retention period** | AI outputs retained for engagement duration + 6 months; AI providers: no training on business data per DPA terms |
 | **Technical & organizational measures** | Automated PII redaction pipeline (detect, replace with placeholders, transmit redacted only, remap locally); human review of all AI outputs; no raw client data sent to AI services |
 
@@ -83,11 +83,11 @@
 |-------|---------|
 | **Processing activity** | Automated monitoring of workstation for security threats, unauthorized access, and GDPR compliance violations |
 | **Purpose** | Protection of client data, detection of security incidents, compliance with Art. 32 GDPR (security of processing) |
-| **Legal basis** | Art. 6(1)(f) — legitimate interest (security); Art. 6(1)(c) — legal obligation (Art. 32 GDPR) |
+| **Legal basis** | Art. 6(1)(f), legitimate interest (security); Art. 6(1)(c), legal obligation (Art. 32 GDPR) |
 | **Categories of data subjects** | System user (controller); potentially attackers (IP addresses in security logs) |
 | **Categories of personal data** | Process execution logs, network connection metadata, file access events, login attempts, IP addresses |
-| **Recipients / Processors** | Splunk Enterprise (local only, no cloud); Anthropic Claude API (US — SCCs, for AI-powered threat reasoning) [VERIFY_CURRENT]; VirusTotal (US — threat intelligence lookups, IP/hash only) [VERIFY_CURRENT]; GreyNoise (US — IP reputation, IP only) [VERIFY_CURRENT]; CrowdStrike (EU-1 — endpoint protection) [VERIFY_CURRENT] |
-| **Third country transfers** | Anthropic, VirusTotal, GreyNoise (US) — SCCs / DPF; only metadata transmitted (IPs, file hashes, process names), never file contents or client data |
+| **Recipients / Processors** | Splunk Enterprise (local only, no cloud); Anthropic Claude API (US, SCCs, for AI-powered threat reasoning) [VERIFY_CURRENT]; VirusTotal (US, threat intelligence lookups, IP/hash only) [VERIFY_CURRENT]; GreyNoise (US, IP reputation, IP only) [VERIFY_CURRENT]; CrowdStrike (EU-1, endpoint protection) [VERIFY_CURRENT] |
+| **Third country transfers** | Anthropic, VirusTotal, GreyNoise (US), SCCs / DPF; only metadata transmitted (IPs, file hashes, process names), never file contents or client data |
 | **Retention period** | Splunk logs: per index capacity (sysmon 50GB, wineventlog 20GB); triage log: rolling 90 days; baseline: updated continuously |
 | **Technical & organizational measures** | Token-based Splunk auth with weekly rotation, per-agent scoped tokens, Splunk Web firewalled to localhost + Tailscale, Sysmon with modular config, 7 GDPR-specific monitoring rules, automated escalation via ntfy.sh |
 
@@ -99,7 +99,7 @@
 |-------|---------|
 | **Processing activity** | Business email communication with clients, prospects, and partners |
 | **Purpose** | Contract negotiation, service delivery, business correspondence |
-| **Legal basis** | Art. 6(1)(b) — contract performance; Art. 6(1)(f) — legitimate interest (business communication) |
+| **Legal basis** | Art. 6(1)(b), contract performance; Art. 6(1)(f), legitimate interest (business communication) |
 | **Categories of data subjects** | Clients, prospects, business partners |
 | **Categories of personal data** | Name, email address, message content, attachments |
 | **Recipients / Processors** | Email provider (per hosting setup) |
@@ -115,7 +115,7 @@
 |-------|---------|
 | **Processing activity** | Online appointment booking for discovery calls and consultations |
 | **Purpose** | Scheduling convenience for prospective and existing clients |
-| **Legal basis** | Art. 6(1)(b) — pre-contractual measures |
+| **Legal basis** | Art. 6(1)(b), pre-contractual measures |
 | **Categories of data subjects** | Prospective and existing clients |
 | **Categories of personal data** | Name, email address, selected time slot, optional message |
 | **Recipients / Processors** | Cal.com (EU instance) [VERIFY_CURRENT] |

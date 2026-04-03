@@ -5,7 +5,7 @@
 #   Each agent gets its own audience-scoped Splunk token. This prevents one
 #   agent's token from being used to access another agent's data. When you
 #   source this script with an agent name, only that agent's token is exported
-#   as SPLUNK_TOKEN — the rest are cleaned up.
+#   as SPLUNK_TOKEN. The rest are cleaned up.
 #
 # Usage:
 #   source scripts/load-secrets.sh sentinel   # loads sentinel token (default)
@@ -27,11 +27,11 @@ set +a
 AGENT="${1:-sentinel}"
 case "$AGENT" in
   agent2)
-    # Second agent — uses its own audience-scoped token
+    # Second agent - uses its own audience-scoped token
     export SPLUNK_TOKEN="$SPLUNK_TOKEN_AGENT2"
     ;;
   sentinel|*)
-    # Sentinel agent — default
+    # Sentinel agent - default
     export SPLUNK_TOKEN="$SPLUNK_TOKEN_SENTINEL"
     ;;
 esac

@@ -86,7 +86,7 @@ The following categories of personal data may be processed:
 - [ ] Names and contact information of Controller's customers/clients
 - [ ] Employment data (titles, departments, roles)
 - [ ] Financial data (invoices, contracts, account references)
-- [ ] Health data (Art. 9 GDPR special category) — *only if explicitly included in scope*
+- [ ] Health data (Art. 9 GDPR special category) - *only if explicitly included in scope*
 - [ ] Technical identifiers (IP addresses, user IDs, log data)
 - [ ] Other: [SPECIFY]
 
@@ -159,9 +159,9 @@ The Controller hereby grants specific written consent for the engagement of the 
 
 | Sub-processor | Service | Data Location | Safeguard | Data Processed |
 |---------------|---------|---------------|-----------|----------------|
-| Anthropic, PBC [VERIFY_CURRENT] | Claude API — AI-assisted document analysis | United States | EU Standard Contractual Clauses (SCCs); API Terms of Service prohibit use of data for model training | **PII-redacted text only** (see Section 5.3) |
-| Microsoft Corporation [VERIFY_CURRENT] | Azure Document Intelligence — document parsing; Azure OpenAI — AI analysis | EU (West Europe region) | EU Data Boundary; Microsoft DPA | **PII-redacted text only** (see Section 5.3) |
-| Microsoft Corporation [VERIFY_CURRENT] | OneDrive for Business — encrypted backup storage | EU (data residency setting) | Microsoft DPA; encryption at rest and in transit | Encrypted project files |
+| Anthropic, PBC [VERIFY_CURRENT] | Claude API, AI-assisted document analysis | United States | EU Standard Contractual Clauses (SCCs); API Terms of Service prohibit use of data for model training | **PII-redacted text only** (see Section 5.3) |
+| Microsoft Corporation [VERIFY_CURRENT] | Azure Document Intelligence (document parsing); Azure OpenAI (AI analysis) | EU (West Europe region) | EU Data Boundary; Microsoft DPA | **PII-redacted text only** (see Section 5.3) |
+| Microsoft Corporation [VERIFY_CURRENT] | OneDrive for Business, encrypted backup storage | EU (data residency setting) | Microsoft DPA; encryption at rest and in transit | Encrypted project files |
 
 ### 5.2 Obligations Passed to Sub-processors
 
@@ -271,8 +271,8 @@ Upon completion of deletion, the Processor shall provide the Controller with **w
 
 Data may be retained beyond the periods specified above only where required by applicable law, including but not limited to:
 
-- Section 257 of the German Commercial Code (Handelsgesetzbuch, HGB) — 10-year retention for business correspondence and accounting records
-- Section 147 of the German Fiscal Code (Abgabenordnung, AO) — 6- or 10-year retention for tax-relevant documents
+- Section 257 of the German Commercial Code (Handelsgesetzbuch, HGB): 10-year retention for business correspondence and accounting records
+- Section 147 of the German Fiscal Code (Abgabenordnung, AO): 6- or 10-year retention for tax-relevant documents
 
 Where legal retention applies, the Processor shall inform the Controller of the specific data retained, the legal basis, and the retention period. Such data shall remain subject to the confidentiality and security obligations of this Agreement until deletion.
 

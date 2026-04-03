@@ -43,9 +43,9 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | SPLUNK_URL="$SPLUNK_URL"
 You should see a JSON response listing available tools (e.g., `splunk_search`).
 
 **Common issues:**
-- `connection refused` — Splunk management port (8089) is not accessible from your machine. Check firewall rules.
-- `401 Unauthorized` — Token is expired or invalid. Generate a new one in Splunk > Settings > Tokens.
-- Self-signed cert errors — The server uses `-k` equivalent by default for self-signed Splunk certs.
+- `connection refused`: Splunk management port (8089) is not accessible from your machine. Check firewall rules.
+- `401 Unauthorized`: Token is expired or invalid. Generate a new one in Splunk > Settings > Tokens.
+- Self-signed cert errors: The server uses `-k` equivalent by default for self-signed Splunk certs.
 
 ---
 
@@ -73,8 +73,8 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | VIRUSTOTAL_API_KEY="$VIR
 You should see tools like `vt_ip_lookup`, `vt_hash_lookup`, etc.
 
 **Common issues:**
-- `403 Forbidden` — API key is invalid or rate-limited. Free tier allows 4 requests/minute, 500/day.
-- Slow first run — npx downloads the package on first use. Subsequent runs are cached.
+- `403 Forbidden`: API key is invalid or rate-limited. Free tier allows 4 requests/minute, 500/day.
+- Slow first run: npx downloads the package on first use. Subsequent runs are cached.
 
 ---
 
@@ -102,7 +102,7 @@ You should see tools like `greynoise_ip_lookup`.
 **Rate limits:** Free tier allows 10 lookups per day. For higher volume, sign up at [greynoise.io](https://www.greynoise.io/) and set `GREYNOISE_API_KEY`.
 
 **Common issues:**
-- `429 Too Many Requests` — You've hit the daily limit. Wait 24 hours or upgrade to a paid plan.
+- `429 Too Many Requests`: You've hit the daily limit. Wait 24 hours or upgrade to a paid plan.
 
 ---
 
@@ -130,8 +130,8 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | ./mcp-servers/cve-intel/
 You should see tools like `cve_lookup`, `kev_check`, `epss_score`.
 
 **Common issues:**
-- `ModuleNotFoundError` — The virtual environment wasn't activated during install, or `requirements.txt` is missing a dependency. Re-run pip install.
-- Slow responses — NVD API can be slow. The server caches results locally.
+- `ModuleNotFoundError`: The virtual environment wasn't activated during install, or `requirements.txt` is missing a dependency. Re-run pip install.
+- Slow responses: NVD API can be slow. The server caches results locally.
 
 ---
 

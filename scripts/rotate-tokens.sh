@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sentinel — Splunk Token Rotation
+# Sentinel - Splunk Token Rotation
 # Automatically rotates Sentinel and secondary agent tokens before expiry.
 # Called by cron weekly. Only rotates if tokens expire within 7 days.
 # Self-healing: if rotation fails, notifies via ntfy.
@@ -19,7 +19,7 @@ log() {
 
 notify_error() {
   curl -s -o /dev/null \
-    -H "Title: Sentinel — Token Rotation Failed" \
+    -H "Title: Sentinel - Token Rotation Failed" \
     -H "Priority: high" \
     -H "Tags: warning" \
     -d "$1" \
@@ -105,7 +105,7 @@ ROTATED=false
 
 # Rotate if either token expires within 7 days
 if [ "$SENTINEL_DAYS" -le 7 ] || [ "$AGENT2_DAYS" -le 7 ]; then
-  log "Rotation needed — at least one token expiring soon"
+  log "Rotation needed - at least one token expiring soon"
 
   # Use whichever token is still valid as auth for rotation
   if [ "$AGENT2_DAYS" -gt 0 ]; then
@@ -155,8 +155,8 @@ if [ "$SENTINEL_DAYS" -le 7 ] || [ "$AGENT2_DAYS" -le 7 ]; then
   if [ "$ROTATED" = true ]; then
     NEW_EXPIRY=$(date -d "+30 days" +%Y-%m-%d)
     cat > "$SECRETS_FILE" << SECRETS_EOF
-# Sentinel — Splunk/Security API Tokens
-# chmod 600 — DO NOT commit this file anywhere
+# Sentinel - Splunk/Security API Tokens
+# chmod 600 - DO NOT commit this file anywhere
 # Last rotated: $(date +%Y-%m-%d)
 # Tokens expire: ~$NEW_EXPIRY (30 days from creation)
 

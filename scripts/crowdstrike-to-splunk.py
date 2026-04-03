@@ -278,12 +278,12 @@ def stream_events():
             log.debug("Stream timeout (normal), reconnecting...")
             continue
         except requests.exceptions.ConnectionError as e:
-            log.warning("Connection error: %s — retrying in 30s", e)
+            log.warning("Connection error: %s - retrying in 30s", e)
             time.sleep(30)
         except requests.exceptions.HTTPError as e:
             status = getattr(e.response, 'status_code', 0)
             if status in (401, 403, 406):
-                log.warning("Auth/stream expired (%d) — re-authenticating and getting new stream", status)
+                log.warning("Auth/stream expired (%d) - re-authenticating and getting new stream", status)
                 try:
                     cs_token = cs_get_token()
                     token_time = time.time()
@@ -292,13 +292,13 @@ def stream_events():
                     stream_url = stream_url_base + (f"&offset={offset}" if offset > 0 else "")
                     log.info("Re-established stream at offset %d", offset)
                 except Exception as reauth_err:
-                    log.error("Re-auth failed: %s — retrying in 60s", reauth_err)
+                    log.error("Re-auth failed: %s - retrying in 60s", reauth_err)
                     time.sleep(60)
             else:
-                log.error("HTTP error %d: %s — retrying in 60s", status, e)
+                log.error("HTTP error %d: %s - retrying in 60s", status, e)
                 time.sleep(60)
         except Exception as e:
-            log.error("Unexpected error: %s — retrying in 60s", e)
+            log.error("Unexpected error: %s - retrying in 60s", e)
             time.sleep(60)
 
     save_offset(offset)

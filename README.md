@@ -10,15 +10,15 @@ No Docker. No Kubernetes. No YAML hell. Just markdown, Claude Code, and Splunk.
 
 ## Features
 
-- **AI-powered reasoning** — Correlates process, network, and file events. Doesn't just pattern-match; connects kill chains across event types.
-- **GDPR-aware monitoring** — 7 detection rules for customer data protection. Unauthorized access, data exfiltration, bulk enumeration — all covered.
-- **Persistent operation** — Runs 24/7 in a tmux session with automatic restart on crash. Checkpoint-based so it never re-analyzes old events.
-- **Threat enrichment** — Suspicious IPs checked against VirusTotal and GreyNoise. Unknown CVEs looked up in real time. All via MCP servers.
-- **Smart triage** — Scores events 0-100, classifies CRITICAL/HIGH/MEDIUM/LOW. Only bothers you when it matters. No alert fatigue.
-- **Push notifications** — Escalates to your phone via ntfy.sh. Swappable for Slack, PagerDuty, email, or any HTTP endpoint.
-- **SIEM-agnostic architecture** — Ships with Splunk queries. Community can contribute Elastic, Wazuh, or any other SIEM query pack.
-- **Compliance templates** — Fill-in-the-blank DPIA, Incident Response Plan, DPA, ROPA, and AI Transparency Statement. Actual legal structure, not boilerplate.
-- **Military-flavored personality** — Optional operator persona that communicates like a SOC analyst, not a chatbot.
+- **AI-powered reasoning.** Correlates process, network, and file events. Doesn't just pattern-match; connects kill chains across event types.
+- **GDPR-aware monitoring.** 7 detection rules for customer data protection. Unauthorized access, data exfiltration, bulk enumeration, all covered.
+- **Persistent operation.** Runs 24/7 in a tmux session with automatic restart on crash. Checkpoint-based so it never re-analyzes old events.
+- **Threat enrichment.** Suspicious IPs checked against VirusTotal and GreyNoise. Unknown CVEs looked up in real time. All via MCP servers.
+- **Smart triage.** Scores events 0-100, classifies CRITICAL/HIGH/MEDIUM/LOW. Only bothers you when it matters. No alert fatigue.
+- **Push notifications.** Escalates to your phone via ntfy.sh. Swappable for Slack, PagerDuty, email, or any HTTP endpoint.
+- **SIEM-agnostic architecture.** Ships with Splunk queries. Community can contribute Elastic, Wazuh, or any other SIEM query pack.
+- **Compliance templates.** Fill-in-the-blank DPIA, Incident Response Plan, DPA, ROPA, and AI Transparency Statement. Actual legal structure, not boilerplate.
+- **Military-flavored personality.** Optional operator persona that communicates like a SOC analyst, not a chatbot.
 
 ## Quickstart
 
@@ -36,8 +36,8 @@ chmod 600 ~/.sentinel-secrets
 # splunk-siem, virustotal, greynoise, cve-intel
 
 # 4. Customize the agent
-# Edit agent/CLAUDE.md — set your environment, paths, notification topic
-# Edit rules/gdpr.md — set your customer data directory patterns
+# Edit agent/CLAUDE.md - set your environment, paths, notification topic
+# Edit rules/gdpr.md - set your customer data directory patterns
 
 # 5. Start Sentinel
 tmux new-session -d -s sentinel 'bash scripts/supervisor.sh'
@@ -102,7 +102,7 @@ See [docs/setup.md](docs/setup.md) for the full setup guide with verification st
 | Doc | Description |
 |-----|-------------|
 | [Setup Guide](docs/setup.md) | Full installation and configuration walkthrough |
-| [Architecture](docs/architecture.md) | How Sentinel works — components, data flow, triage logic |
+| [Architecture](docs/architecture.md) | How Sentinel works: components, data flow, triage logic |
 | [Customization](docs/customization.md) | Add rules, swap SIEMs, change personality, tune thresholds |
 | [FAQ](docs/faq.md) | Common questions about cost, compatibility, and compliance |
 | [MCP Servers](mcp/README.md) | Install and configure the threat intelligence MCP servers |
@@ -125,7 +125,7 @@ Search for `[YOUR_` to find all placeholders that need to be filled in. See [com
 
 ```
 sentinel-soc-agent/
-├── agent/           # The agent brain — CLAUDE.md, personality, heartbeat loop
+├── agent/           # The agent brain: CLAUDE.md, personality, heartbeat loop
 ├── rules/           # Detection rules + SIEM query packs
 ├── scripts/         # Supervisor, secrets loader, token rotation, legacy engine
 ├── mcp/             # MCP server configuration template + install guide
@@ -137,11 +137,11 @@ sentinel-soc-agent/
 
 ## Legacy Engine (v1)
 
-[scripts/sentinel.py](scripts/sentinel.py) is the original rule-based Python script that preceded the Claude Code agent. Included for reference — it demonstrates the scoring logic in traditional code. The active agent is the Claude Code-powered system in `agent/`.
+[scripts/sentinel.py](scripts/sentinel.py) is the original rule-based Python script that preceded the Claude Code agent. Included for reference. It demonstrates the scoring logic in traditional code. The active agent is the Claude Code-powered system in `agent/`.
 
 ## Contributing
 
-Contributions welcome — especially SIEM query packs for Elastic, Wazuh, and other platforms. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions welcome, especially SIEM query packs for Elastic, Wazuh, and other platforms. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 The most impactful contribution: create `rules/queries/elastic.md` or `rules/queries/wazuh.md` following the [query file contract](docs/customization.md#adding-a-siem-backend).
 

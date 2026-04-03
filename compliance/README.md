@@ -4,7 +4,7 @@ This directory contains GDPR and EU AI Act compliance document templates for org
 
 ## Templates
 
-### 1. dpia-template.md — Data Protection Impact Assessment (Art. 35 GDPR)
+### 1. dpia-template.md - Data Protection Impact Assessment (Art. 35 GDPR)
 
 **When you need it:** Required when your processing is "likely to result in a high risk to the rights and freedoms of natural persons" (Art. 35(1)). Using AI agents that process security telemetry, client documents, or prospect data qualifies.
 
@@ -17,7 +17,7 @@ This directory contains GDPR and EU AI Act compliance document templates for org
 - Supervisory authority consultation guidance
 - AI agent data access matrix
 
-### 2. incident-response-plan.md — Incident Response Plan (Art. 33/34 GDPR)
+### 2. incident-response-plan.md - Incident Response Plan (Art. 33/34 GDPR)
 
 **When you need it:** Art. 33 requires notification to your supervisory authority within 72 hours of becoming aware of a personal data breach. You need documented procedures before an incident happens.
 
@@ -31,7 +31,7 @@ This directory contains GDPR and EU AI Act compliance document templates for org
 - Evidence preservation procedures with chain of custody
 - Post-incident review process
 
-### 3. dpa-template.md — Data Processing Agreement (Art. 28 GDPR)
+### 3. dpa-template.md - Data Processing Agreement (Art. 28 GDPR)
 
 **When you need it:** Required whenever you process personal data on behalf of a client (processor role). Must be signed before processing begins.
 
@@ -44,7 +44,7 @@ This directory contains GDPR and EU AI Act compliance document templates for org
 - Return and deletion procedures with German retention law references (HGB, AO)
 - Liability and indemnification clauses
 
-### 4. ropa-template.md — Record of Processing Activities (Art. 30 GDPR)
+### 4. ropa-template.md - Record of Processing Activities (Art. 30 GDPR)
 
 **When you need it:** Art. 30 requires controllers to maintain records of processing activities. While there's an exemption for organizations with fewer than 250 employees, it doesn't apply if processing is "not occasional" or includes special categories of data.
 
@@ -54,7 +54,7 @@ This directory contains GDPR and EU AI Act compliance document templates for org
 - Retention periods aligned with German law (HGB SS257, AO SS147)
 - Technical measures per processing activity
 
-### 5. ai-transparency.md — AI Transparency Statement (EU AI Act)
+### 5. ai-transparency.md - AI Transparency Statement (EU AI Act)
 
 **When you need it:** The EU AI Act requires transparency about AI system usage. Even if your AI systems are classified as general-purpose (not high-risk), deployers have transparency obligations under Art. 52.
 

@@ -47,7 +47,7 @@ All PRs are reviewed by the maintainer.
 This is the most valuable type of contribution. To add support for a new SIEM:
 
 1. Create `rules/queries/<siem-name>.md` (e.g., `elastic.md`, `wazuh.md`)
-2. **Use the exact same heading names** as `rules/queries/splunk.md` — the agent references rules by heading
+2. **Use the exact same heading names** as `rules/queries/splunk.md`. The agent references rules by heading
 3. Each rule: level-2 heading, brief description, fenced code block with the query
 4. Include severity guidance and false positive notes where relevant
 
@@ -61,7 +61,7 @@ New detection rules go in `rules/gdpr.md` (for GDPR-specific rules) or a new fil
 
 - Scripts follow existing patterns in the repo
 - Markdown: ATX headings, fenced code blocks, one sentence per line in prose
-- No linter enforced for v1 — just be consistent with what's there
+- No linter enforced for v1. Just be consistent with what's there
 
 ## Questions?
 

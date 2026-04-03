@@ -9,7 +9,7 @@
 #   tmux new-session -d -s sentinel './scripts/supervisor.sh'
 #
 # Configuration:
-#   SENTINEL_DIR  — Root directory for Sentinel (default: $HOME/sentinel)
+#   SENTINEL_DIR  - Root directory for Sentinel (default: $HOME/sentinel)
 
 set -euo pipefail
 

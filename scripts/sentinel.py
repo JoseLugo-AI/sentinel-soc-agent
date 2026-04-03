@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Legacy v1 (reference only) — see agent/CLAUDE.md for the active Claude Code agent.
+Legacy v1 (reference only). See agent/CLAUDE.md for the active Claude Code agent.
 
 Sentinel SOC Analyst Agent
 Passive threat detection for Windows 11 + WSL2 environments.
@@ -96,7 +96,7 @@ class Splunk:
             if not output:
                 return []
 
-            # Parse CSV — skip WARNING lines
+            # Parse CSV - skip WARNING lines
             lines = [l for l in output.split("\n") if l.strip() and not l.startswith("WARNING") and "CategoryInfo" not in l and "FullyQualifiedErrorId" not in l and "server.conf" not in l and "At \\" not in l and "+  " not in l]
             if len(lines) < 2:
                 return []
@@ -248,7 +248,7 @@ def score_file_event(ev: dict) -> tuple[int, list[str]]:
     if "desktop\\work" in target:
         # From WSL/Claude Code → expected but log it
         if "wsl.exe" in image or "powershell.exe" in image:
-            return 10, ["Claude Code accessing Work folder — expected but logged"]
+            return 10, ["Claude Code accessing Work folder - expected but logged"]
         # From explorer → user manually, OK
         if "explorer.exe" in image:
             return 5, ["User accessing Work folder manually"]
@@ -353,7 +353,7 @@ def send_ntfy(title: str, message: str, priority: str = "default", tags: str = "
 def escalate(alert: dict):
     """Route alert based on severity."""
     sev = alert["severity"]
-    title = f"Sentinel: {sev} — {alert['type']}"
+    title = f"Sentinel: {sev} - {alert['type']}"
     body = (
         f"{alert['reason']}\n"
         f"Process: {alert.get('process', '?')}\n"
@@ -500,7 +500,7 @@ def heartbeat():
 
     # Send heartbeat confirmation if all clear
     if stats["critical"] == 0 and stats["high"] == 0:
-        # Silent — don't spam the user
+        # Silent - don't spam the user
         pass
     else:
         # Summary push for any HIGH+ alerts

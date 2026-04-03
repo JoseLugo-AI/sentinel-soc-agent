@@ -1,4 +1,4 @@
-# Splunk SPL Queries — Sentinel SOC Agent
+# Splunk SPL Queries - Sentinel SOC Agent
 
 > **Query File Contract:**
 > This file defines the detection queries that the Sentinel agent runs during each heartbeat cycle.
@@ -6,12 +6,12 @@
 > severity guidance, and false positive notes.
 >
 > The headings in this file are referenced by `CLAUDE.md` (Phase 1: Collect). Community contributors
-> can create alternative query files for other SIEMs — e.g., `elastic.md`, `wazuh.md`, `sigma.md` —
+> can create alternative query files for other SIEMs (e.g., `elastic.md`, `wazuh.md`, `sigma.md`)
 > using the **same headings**. The agent loads whichever query file matches the configured SIEM backend.
 >
 > **Template variables:**
-> - `${CUSTOMER_DATA_PATH}` — Path to the protected customer/client data directory (e.g., `C:\Data\Clients`)
-> - `${CUSTOMER_DATA_KEYWORDS}` — Pipe-separated list of customer data filename patterns (default: `kunden|client|vertrag|rechnung|invoice|contract|DPIA|ROPA`)
+> - `${CUSTOMER_DATA_PATH}`: Path to the protected customer/client data directory (e.g., `C:\Data\Clients`)
+> - `${CUSTOMER_DATA_KEYWORDS}`: Pipe-separated list of customer data filename patterns (default: `kunden|client|vertrag|rechnung|invoice|contract|DPIA|ROPA`)
 
 ---
 
@@ -84,7 +84,7 @@ index=wineventlog EventCode=4663
 **False positives:**
 - The operator manually browsing files in Explorer (`explorer.exe`)
 - Authorized AI agents processing customer documents via `wsl.exe`
-- OneDrive sync processes (`OneDrive.exe`, `Microsoft.SharePoint.exe`) — authorized backup
+- OneDrive sync processes (`OneDrive.exe`, `Microsoft.SharePoint.exe`), authorized backup
 - Endpoint protection agents scanning files
 
 **Configuration note:** Replace `${CUSTOMER_DATA_PATH}` with your actual customer data directory. If you use multiple paths (e.g., local + cloud sync), add additional `ObjectName` clauses with OR.
@@ -104,7 +104,7 @@ index=sysmon EventCode=11
     NOT TargetFilename="*splunk*"
 ```
 
-**Severity guidance:** HIGH — customer data created outside the secure directory is always suspicious. Escalate to CRITICAL if the creating process is not authorized or if the destination is a removable/network path.
+**Severity guidance:** HIGH. Customer data created outside the secure directory is always suspicious. Escalate to CRITICAL if the creating process is not authorized or if the destination is a removable/network path.
 
 **False positives:**
 - Splunk indexing its own data (excluded via `NOT *splunk*`)
@@ -142,7 +142,7 @@ index=wineventlog EventCode=4625
 
 ## CrowdStrike Falcon Alerts
 
-*Optional — requires CrowdStrike Falcon with Splunk forwarder configured.*
+*Optional. Requires CrowdStrike Falcon with Splunk forwarder configured.*
 
 Captures detection and incident events from CrowdStrike Falcon endpoint protection. These are pre-triaged by CrowdStrike's ML engine so they typically warrant immediate attention.
 
@@ -153,7 +153,7 @@ index=sysmon sourcetype="crowdstrike:falcon:event"
 | table _time, event.metadata.eventType, event.event.*
 ```
 
-**Severity guidance:** Map CrowdStrike severity directly — CrowdStrike Critical = Sentinel CRITICAL, CrowdStrike High = Sentinel HIGH. DetectionSummaryEvent is always HIGH minimum. IncidentSummaryEvent is always CRITICAL.
+**Severity guidance:** Map CrowdStrike severity directly. CrowdStrike Critical = Sentinel CRITICAL, CrowdStrike High = Sentinel HIGH. DetectionSummaryEvent is always HIGH minimum. IncidentSummaryEvent is always CRITICAL.
 
 **False positives:**
 - Low-confidence detections on known admin tools (PsExec used legitimately, etc.)
@@ -163,9 +163,9 @@ index=sysmon sourcetype="crowdstrike:falcon:event"
 
 ## CrowdStrike Sensor Health
 
-*Optional — requires CrowdStrike Falcon with Splunk forwarder configured.*
+*Optional. Requires CrowdStrike Falcon with Splunk forwarder configured.*
 
-Monitors CrowdStrike sensor heartbeat. If no events are received within the expected interval, the sensor or forwarder may be down — which is itself a security concern (an attacker may have disabled endpoint protection).
+Monitors CrowdStrike sensor heartbeat. If no events are received within the expected interval, the sensor or forwarder may be down, which is itself a security concern (an attacker may have disabled endpoint protection).
 
 ```spl
 index=sysmon sourcetype="crowdstrike:falcon:event"

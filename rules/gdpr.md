@@ -219,7 +219,7 @@ index=sysmon EventCode=23 TargetFilename="*customer_data*"
 
 **Before deploying GDPR rules:**
 
-- [ ] Define `customer_data` directory location(s) — set `${CUSTOMER_DATA_PATH}` in your config
+- [ ] Define `customer_data` directory location(s). Set `${CUSTOMER_DATA_PATH}` in your config
 - [ ] List authorized processes (AI agents, specific Python scripts)
 - [ ] List authorized users (operator, service accounts)
 - [ ] Whitelist legitimate backup/export tools
@@ -277,4 +277,4 @@ index=sysmon EventCode=23 TargetFilename="*customer_data*"
 ---
 
 **Owner:** Sentinel SOC Analyst Agent  
-**Status:** Template — configure `${CUSTOMER_DATA_PATH}` and authorized process list before deployment
+**Status:** Template. Configure `${CUSTOMER_DATA_PATH}` and authorized process list before deployment

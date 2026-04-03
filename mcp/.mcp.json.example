@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "splunk-siem": {
+      "type": "stdio",
+      "command": "./mcp-servers/splunk-siem/mcp-server-splunk",
+      "args": [],
+      "env": {
+        "SPLUNK_URL": "${SPLUNK_URL}",
+        "SPLUNK_TOKEN": "${SPLUNK_TOKEN}"
+      }
+    },
+    "virustotal": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@burtthecoder/mcp-virustotal"],
+      "env": {
+        "VIRUSTOTAL_API_KEY": "${VIRUSTOTAL_API_KEY}"
+      }
+    },
+    "greynoise": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "mcp-greynoise"],
+      "env": {}
+    },
+    "cve-intel": {
+      "type": "stdio",
+      "command": "./mcp-servers/cve-intel/.venv/bin/python",
+      "args": ["./mcp-servers/cve-intel/server.py"],
+      "env": {}
+    }
+  }
+}

@@ -1,0 +1,468 @@
+<dashboard version="1.1" theme="dark">
+  <label>Sentinel SOC Overview</label>
+  <description>[YOUR_BUSINESS] — Cyber Perimeter Monitoring</description>
+
+  <fieldset submitButton="false">
+    <input type="time" token="timerange" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+
+  <!-- ============================================ -->
+  <!-- ROW 1: GDPR ACCESS HEATMAP                  -->
+  <!-- ============================================ -->
+  <row>
+    <panel>
+      <title>GDPR Work Folder Access — Process x Hour Heatmap</title>
+      <chart>
+        <search>
+          <query>index=wineventlog EventCode=4663 (ObjectName="*Desktop\\Work*" OR ObjectName="*OneDrive\\Desktop\\Work*") earliest=$timerange.earliest$ latest=$timerange.latest$
+| eval hour=strftime(_time, "%H:00")
+| eval process=coalesce(ProcessName, "unknown")
+| eval process_short=replace(process, "C:\\\\[^\\\\]+\\\\([^\\\\]+)$", "\1")
+| stats count by process_short hour
+| sort hour</query>
+          <earliest>$timerange.earliest$</earliest>
+          <latest>$timerange.latest$</latest>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.axisTitleX.text">Hour of Day</option>
+        <option name="charting.axisTitleY.text">Access Events</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.chart.showDataLabels">minmax</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>GDPR Access — Unauthorized Process Detection</title>
+      <table>
+        <search>
+          <query>index=wineventlog EventCode=4663 (ObjectName="*Desktop\\Work*" OR ObjectName="*OneDrive\\Desktop\\Work*") earliest=$timerange.earliest$ latest=$timerange.latest$
+| eval process=coalesce(ProcessName, "unknown")
+| eval authorized=case(
+    match(process, "(?i)(explorer|OneDrive|SearchProtocolHost|Acrobat|Notepad|attrib|wsl)"), "YES",
+    1=1, "NO"
+)
+| where authorized="NO"
+| stats count earliest(_time) as first_seen latest(_time) as last_seen values(ObjectName) as files_accessed by process SubjectUserName
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S")
+| eval last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| sort -count
+| rename process as "Process" SubjectUserName as "User" count as "Events" first_seen as "First Seen" last_seen as "Last Seen" files_accessed as "Files Accessed"</query>
+          <earliest>$timerange.earliest$</earliest>
+          <latest>$timerange.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">10</option>
+        <format type="color" field="Events">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" midColor="#F8BE34" minColor="#53A051"></colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <!-- GDPR: Customer data outside Work folder -->
+  <row>
+    <panel>
+      <title>GDPR Alert — Customer Data Outside Work Folder</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=11 earliest=$timerange.earliest$ latest=$timerange.latest$
+(TargetFilename="*kunden*" OR TargetFilename="*client*" OR TargetFilename="*vertrag*" OR TargetFilename="*rechnung*" OR TargetFilename="*invoice*" OR TargetFilename="*contract*" OR TargetFilename="*DPIA*" OR TargetFilename="*ROPA*")
+NOT TargetFilename="*Desktop\\Work*"
+NOT TargetFilename="*OneDrive\\Desktop\\Work*"
+NOT TargetFilename="*splunk*"
+| eval process_short=replace(Image, ".*\\\\", "")
+| table _time process_short TargetFilename User
+| sort -_time
+| rename process_short as "Process" TargetFilename as "File Path" User as "User" _time as "Time"</query>
+          <earliest>$timerange.earliest$</earliest>
+          <latest>$timerange.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">20</option>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ============================================ -->
+  <!-- ROW 2: EVENT VOLUME BASELINE                 -->
+  <!-- ============================================ -->
+  <row>
+    <panel>
+      <title>Event Volume — Hourly Trend with Baseline</title>
+      <chart>
+        <search>
+          <query>index=sysmon earliest=-7d latest=now
+| timechart span=1h count as current_count
+| eventstats avg(current_count) as avg_count stdev(current_count) as stdev_count
+| eval upper_threshold=avg_count + (2 * stdev_count)
+| eval anomaly=if(current_count > upper_threshold, current_count, null())
+| fields _time current_count avg_count upper_threshold anomaly</query>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.axisTitleY.text">Events / Hour</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.chart.overlayFields">avg_count,upper_threshold,anomaly</option>
+        <option name="charting.fieldColors">{"current_count":0x1E90FF,"avg_count":0x53A051,"upper_threshold":0xF8BE34,"anomaly":0xDC4E41}</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Event Volume — By EventCode (Sysmon)</title>
+      <chart>
+        <search>
+          <query>index=sysmon earliest=$timerange.earliest$ latest=$timerange.latest$
+| eval EventLabel=case(
+    EventCode=1, "1-ProcessCreate",
+    EventCode=3, "3-NetworkConnect",
+    EventCode=7, "7-ImageLoad",
+    EventCode=10, "10-ProcessAccess",
+    EventCode=11, "11-FileCreate",
+    EventCode=13, "13-RegistryValue",
+    EventCode=17, "17-PipeCreated",
+    EventCode=22, "22-DNSQuery",
+    EventCode=26, "26-FileDelete",
+    1=1, EventCode
+)
+| timechart span=1h count by EventLabel</query>
+          <earliest>$timerange.earliest$</earliest>
+          <latest>$timerange.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.axisTitleY.text">Events</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Daily Event Volume — Sysmon vs WinEventLog</title>
+      <chart>
+        <search>
+          <query>(index=sysmon OR index=wineventlog) earliest=-7d latest=now
+| eval source_index=if(index="sysmon","Sysmon","WinEventLog")
+| timechart span=1d count by source_index</query>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.axisTitleX.text">Date</option>
+        <option name="charting.axisTitleY.text">Events / Day</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.fieldColors">{"Sysmon":0x1E90FF,"WinEventLog":0xF8BE34}</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- ============================================ -->
+  <!-- ROW 3: SENTINEL COVERAGE / HEARTBEAT         -->
+  <!-- ============================================ -->
+  <row>
+    <panel>
+      <title>Sentinel Patrol Coverage — Heartbeat Timeline</title>
+      <viz type="timeline_app.timeline">
+        <search>
+          <query>index=sysmon EventCode=1 earliest=-24h latest=now
+(CommandLine="*sentinel*" OR CommandLine="*splunk*search*" OR Image="*curl*")
+(CommandLine="*8089*")
+| eval patrol="Sentinel Heartbeat"
+| table _time patrol
+| sort _time</query>
+        </search>
+      </viz>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Sentinel Heartbeats — From Triage Log</title>
+      <single>
+        <search>
+          <query>| inputlookup sentinel_triage.csv where type="HEARTBEAT" earliest=-24h
+| stats count as heartbeats
+| eval expected=48
+| eval coverage=round((heartbeats/expected)*100,1)
+| eval display=heartbeats." / ".expected." (".coverage."%)"</query>
+        </search>
+        <option name="underLabel">Patrols (24h) — Target: 48</option>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0xDC4E41","0xF8BE34","0x53A051"]</option>
+        <option name="rangeValues">[24,40]</option>
+        <option name="useColors">true</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Heartbeat Gap Detection (>45min = blind spot)</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=1 earliest=-24h latest=now
+(CommandLine="*sentinel*heartbeat*" OR (CommandLine="*8089*" AND CommandLine="*search*"))
+| sort _time
+| streamstats current=f last(_time) as prev_time
+| eval gap_minutes=round((_time - prev_time)/60, 1)
+| where gap_minutes > 45
+| eval gap_start=strftime(prev_time, "%H:%M")
+| eval gap_end=strftime(_time, "%H:%M")
+| eval blind_spot=gap_start." -> ".gap_end." (".gap_minutes." min)"
+| table blind_spot gap_minutes
+| sort -gap_minutes
+| rename blind_spot as "Blind Spot" gap_minutes as "Duration (min)"</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">10</option>
+        <format type="color" field="Duration (min)">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" midColor="#F8BE34" minColor="#53A051"></colorPalette>
+          <scale type="minMidMax" minValue="45" midValue="90" maxValue="180"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ============================================ -->
+  <!-- ROW 4: PROCESS TREE ANOMALIES               -->
+  <!-- ============================================ -->
+  <row>
+    <panel>
+      <title>Process Parent-Child Anomalies (Outside Baseline)</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=1 earliest=$timerange.earliest$ latest=$timerange.latest$
+| eval child=replace(Image, ".*\\\\", "")
+| eval parent=replace(ParentImage, ".*\\\\", "")
+| eval pair=parent." -> ".child
+| stats count earliest(_time) as first_seen latest(_time) as last_seen values(User) as users values(CommandLine) as cmds by pair parent child
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S")
+| eval last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| where NOT (
+    match(pair, "(?i)svchost.*WmiPrvSE")
+    OR match(pair, "(?i)svchost.*MicrosoftEdgeUpdate")
+    OR match(pair, "(?i)svchost.*sdbinst")
+    OR match(pair, "(?i)svchost.*rundll32")
+    OR match(pair, "(?i)Code.*Code")
+    OR match(pair, "(?i)Code.*code-tunnel")
+    OR match(pair, "(?i)splunkd")
+    OR match(pair, "(?i)Sysmon")
+)
+| sort -count
+| head 30
+| rename pair as "Parent -> Child" count as "Events" first_seen as "First Seen" last_seen as "Last Seen" users as "Users" cmds as "Command Lines"</query>
+          <earliest>$timerange.earliest$</earliest>
+          <latest>$timerange.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">20</option>
+        <option name="wrap">true</option>
+        <format type="color" field="Events">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" midColor="#F8BE34" minColor="#53A051"></colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Credential Theft / C2 Indicators (CRITICAL — Always Alert)</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=1 earliest=$timerange.earliest$ latest=$timerange.latest$
+(CommandLine="*mimikatz*" OR CommandLine="*procdump*" OR CommandLine="*lazagne*"
+ OR CommandLine="*secretsdump*" OR CommandLine="*rubeus*" OR CommandLine="*sharphound*"
+ OR CommandLine="*bloodhound*" OR CommandLine="*nc -e*" OR CommandLine="*ncat -e*"
+ OR CommandLine="*bash -i >*" OR CommandLine="*-NoP -NonI -W Hidden*"
+ OR CommandLine="*IEX(*" OR CommandLine="*Invoke-Expression*"
+ OR CommandLine="*Net.WebClient*" OR CommandLine="*certutil*urlcache*"
+ OR CommandLine="*bitsadmin*/transfer*" OR CommandLine="*mshta http*"
+ OR CommandLine="*regsvr32 /s /n /u*"
+ OR Image="*mimikatz*" OR Image="*procdump*" OR Image="*lazagne*")
+| table _time Image ParentImage CommandLine User ProcessId
+| sort -_time
+| rename Image as "Process" ParentImage as "Parent" CommandLine as "Command Line" User as "User" ProcessId as "PID" _time as "Time"</query>
+          <earliest>$timerange.earliest$</earliest>
+          <latest>$timerange.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Suspicious Port Connections (C2 Indicators)</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=3 earliest=$timerange.earliest$ latest=$timerange.latest$
+(DestinationPort=4444 OR DestinationPort=5555 OR DestinationPort=6666
+ OR DestinationPort=1337 OR DestinationPort=8888 OR DestinationPort=9001
+ OR DestinationPort=9999 OR DestinationPort=12345 OR DestinationPort=31337)
+NOT DestinationIp="127.0.0.1"
+| eval process_short=replace(Image, ".*\\\\", "")
+| table _time process_short DestinationIp DestinationPort User
+| sort -_time
+| rename process_short as "Process" DestinationIp as "Dest IP" DestinationPort as "Port" User as "User" _time as "Time"</query>
+          <earliest>$timerange.earliest$</earliest>
+          <latest>$timerange.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ============================================ -->
+  <!-- ROW 5: NETWORK DESTINATIONS                  -->
+  <!-- ============================================ -->
+  <row>
+    <panel>
+      <title>Unique Outbound Destinations — Daily Trend</title>
+      <chart>
+        <search>
+          <query>index=sysmon EventCode=3 earliest=-7d latest=now
+NOT DestinationIp="127.0.0.1"
+NOT DestinationIp="10.*"
+NOT DestinationIp="172.16.*"
+NOT DestinationIp="192.168.*"
+NOT DestinationIp="fe80:*"
+NOT DestinationIp="ff02:*"
+NOT DestinationIp="0:*"
+| eval day=strftime(_time, "%Y-%m-%d")
+| stats dc(DestinationIp) as unique_ips dc(DestinationPort) as unique_ports by day
+| sort day</query>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.axisTitleX.text">Date</option>
+        <option name="charting.axisTitleY.text">Unique Count</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.fieldColors">{"unique_ips":0x1E90FF,"unique_ports":0xF8BE34}</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>New Destinations (First Seen Today)</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=3 earliest=-7d latest=now
+NOT DestinationIp="127.0.0.1"
+NOT DestinationIp="10.*"
+NOT DestinationIp="172.16.*"
+NOT DestinationIp="192.168.*"
+NOT DestinationIp="fe80:*"
+NOT DestinationIp="ff02:*"
+NOT DestinationIp="0:*"
+| eval process_short=replace(Image, ".*\\\\", "")
+| stats earliest(_time) as first_seen latest(_time) as last_seen count values(process_short) as processes values(DestinationPort) as ports by DestinationIp
+| eval first_seen_day=strftime(first_seen, "%Y-%m-%d")
+| eval today=strftime(now(), "%Y-%m-%d")
+| where first_seen_day=today
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S")
+| eval last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| sort -count
+| rename DestinationIp as "Destination IP" processes as "Processes" ports as "Ports" count as "Connections" first_seen as "First Seen" last_seen as "Last Seen"</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">20</option>
+        <format type="color" field="Connections">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" midColor="#F8BE34" minColor="#53A051"></colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Top External Destinations by Process</title>
+      <chart>
+        <search>
+          <query>index=sysmon EventCode=3 earliest=$timerange.earliest$ latest=$timerange.latest$
+NOT DestinationIp="127.0.0.1"
+NOT DestinationIp="10.*"
+NOT DestinationIp="172.16.*"
+NOT DestinationIp="192.168.*"
+NOT DestinationIp="fe80:*"
+NOT DestinationIp="ff02:*"
+NOT DestinationIp="0:*"
+| eval process_short=replace(Image, ".*\\\\", "")
+| stats count by process_short DestinationIp
+| sort -count
+| head 25</query>
+          <earliest>$timerange.earliest$</earliest>
+          <latest>$timerange.latest$</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.axisTitleX.text">Connections</option>
+        <option name="charting.axisTitleY.text">Process -> IP</option>
+        <option name="charting.legend.placement">none</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>DNS Queries — Top Domains (Sysmon EventCode 22)</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=22 earliest=$timerange.earliest$ latest=$timerange.latest$
+| eval process_short=replace(Image, ".*\\\\", "")
+| stats count by QueryName process_short
+| sort -count
+| head 30
+| rename QueryName as "Domain" process_short as "Process" count as "Queries"</query>
+          <earliest>$timerange.earliest$</earliest>
+          <latest>$timerange.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">20</option>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ============================================ -->
+  <!-- ROW 6: AUTHENTICATION & FAILED LOGINS        -->
+  <!-- ============================================ -->
+  <row>
+    <panel>
+      <title>Failed Logins (EventCode 4625)</title>
+      <chart>
+        <search>
+          <query>index=wineventlog EventCode=4625 earliest=-7d latest=now
+| timechart span=1h count</query>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.axisTitleY.text">Failed Logins</option>
+        <option name="charting.fieldColors">{"count":0xDC4E41}</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Successful Logins by Type</title>
+      <chart>
+        <search>
+          <query>index=wineventlog EventCode=4624 earliest=$timerange.earliest$ latest=$timerange.latest$
+| eval LogonTypeLabel=case(
+    LogonType=2, "2-Interactive",
+    LogonType=3, "3-Network",
+    LogonType=4, "4-Batch",
+    LogonType=5, "5-Service",
+    LogonType=7, "7-Unlock",
+    LogonType=10, "10-RemoteInteractive",
+    LogonType=11, "11-CachedInteractive",
+    1=1, LogonType
+)
+| timechart span=1h count by LogonTypeLabel</query>
+          <earliest>$timerange.earliest$</earliest>
+          <latest>$timerange.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.axisTitleY.text">Logins</option>
+        <option name="charting.legend.placement">bottom</option>
+      </chart>
+    </panel>
+  </row>
+
+</dashboard>

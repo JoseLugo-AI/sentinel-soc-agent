@@ -1,0 +1,33 @@
+# Secrets — NEVER commit
+.mcp.json
+*.secrets
+.splunk_pass
+.env
+
+# Runtime state
+last-heartbeat.txt
+triage.jsonl
+baseline.csv
+crowdstrike-stream-offset.txt
+
+# Logs
+logs/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# MCP server binaries and deps
+mcp-servers/*/mcp-server-*
+mcp-servers/*/.venv/
+mcp-servers/*/node_modules/
+
+# Generated assets (scoped, not blanket)
+dpia-assets/
+video-assets/
+/*.png
+/*.pdf
+# Allow docs images
+!docs/images/
